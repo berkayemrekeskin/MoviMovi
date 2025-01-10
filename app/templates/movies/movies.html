@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if page_type == 'search' %}
+        Search Results  
+    {% else %}
+        Movies
+    {% endif %}
+{% endblock %}
+
+{% block navigation %}
+    <a href="{{ url_for('movies_bp.get_movies') }}">Movies</a>
+    <a href="{{ url_for('user.get_user', id = user_id) }}">Profile</a>
+    <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    <div class="searchbar">
+        <form class="search" action="{{ url_for('movies_bp.search') }}" method="GET" style="display: inline;">
+            <input type="text" name="query" placeholder="Search Movie/Genre..." aria-label="Search" required>
+            <select name="type" aria-label="Search Type">
+                <option value="title">Title</option>
+                <option value="genre">Genre</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if page_type == 'search' %}
+        <h1>Search Results</h1>
+    {% else %}
+        <h1>Movies</h1>
+    {% endif %}
+    <div class="movie-grid">
+        {% for movie in movies %}
+            <div class="movie-item" data-movie-id="{{ movie.movieId }}">
+                {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" style="width: 100%;">
+                {% else %}
+                    <p>No Poster Available</p>
+                {% endif %}
+                <h3 class= "movie-title">{{ movie.title }}</h3>
+                {% if movie.rating %}
+                    <p>{{movie.rating}} / 5</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if page_type == 'search' %}
+            {% if page > 1 %}
+                <a href="{{ url_for('movies_bp.search', query=request.args.get('query'), type=request.args.get('type'), page=page - 1) }}"> ⬅️ </a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+                <a href="{{ url_for('movies_bp.search', query=request.args.get('query'), type=request.args.get('type'), page=page + 1) }}"> ➡️ </a>
+            {% endif %}
+        {% else %}
+            {% if page > 1 %}
+                <a href="{{ url_for('movies_bp.get_movies', page=page - 1) }}"> ⬅️ </a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+                <a href="{{ url_for('movies_bp.get_movies', page=page + 1) }}"> ➡️ </a>
+            {% endif %}
+        {% endif %}
+    </div>
+    
+
+    <script>
+        document.querySelectorAll('.movie-item').forEach(item => {
+            item.addEventListener('click', event => {
+                const movieId = item.getAttribute('data-movie-id');
+                window.location.href = `/movies/${movieId}`;
+            });
+        });
+
+        </script>
+{% endblock %}

@@ -1,0 +1,11 @@
+<!doctype html>
+<title>MoviMovi - {% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav class="header">
+    {% block navigation %} 
+    {% endblock %}
+</nav>
+<section class="content">
+  {% block content %} 
+  {% endblock %}
+</section>

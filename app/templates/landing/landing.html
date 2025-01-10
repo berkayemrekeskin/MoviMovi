@@ -1,0 +1,15 @@
+<!doctype html>
+<title>MoviMovi - Home</title>  
+<link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+<div class = "container">
+    <div class = "bg">
+        <section class="content">
+            <h1>Welcome to MoviMovi</h1>
+            <p>Log in to start tracking your favorite movies!</p>
+        </section>
+        <section class="links">
+            <a href="{{ url_for('auth.login') }}">Log In</a>
+            <a href="{{ url_for('auth.register') }}">Register</a>
+        </section>
+    </div>
+</div>

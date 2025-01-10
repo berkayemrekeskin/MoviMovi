@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %} {{user.username}} {% endblock %}
+{% block navigation %}
+    <a href="{{ url_for('movies_bp.get_movies') }}">Movies</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+{% endblock %}
+{% block content %}
+    <div class="user">
+        <h1>{{user.username}}</h1>
+        <p>{{ user.email }}</p>
+        {% if user.current_user != user.username %} 
+            {% if user.is_friend %}
+                <form method="POST" action="{{ url_for('user.remove_friend', id=user.userId) }}">
+                    <button class='remove-friend-button' id='remove-button' type="submit"> Remove Friend </button>
+                </form>
+            {% else %}
+                <form method="POST" action="{{ url_for('user.add_friend', id=user.userId) }}">
+                    <button class='add-friend-button' id='add-button' type="submit"> Add Friend </button>
+                </form>
+            {% endif %}
+        {% endif %}
+        {% if user.current_user == user.username %} 
+            <h1>Friends</h1>
+            {% if user.friends %} 
+                <div class="friend-grid">
+                    {% for friend in user.friends %}
+                        <div class="friend-item">
+                            <li>
+                                <a href="{{ url_for('user.get_user', id=friend.userId) }}" style="color: #3766a8">{{ friend.username }}</a>
+                            </li>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No friends yet...</p>
+            {% endif %}
+        {% endif %}
+        {% if user.current_user != user.username %} 
+            <h1>Common Friends</h1>
+            <div class="common-friends-grid">
+                {% if user.common_friends %}
+                    {% for friend in user.common_friends %}
+                        <div class="friend-item">
+                            <li>
+                                <a href="{{ url_for('user.get_user', id=friend.userId) }}" style="color: #3766a8">{{ friend.username }}</a>
+                            </li>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No common friends yet...</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="user">
+        <h1>Watchlist</h1>
+        {% if user.watchlists %}
+            <div class="movie-grid">
+                {% for movie in user.watchlists %}
+                    <div class="movie-item" data-movie-id="{{ movie.movieId }}">
+                        {% if movie.poster_url %}
+                            <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" style="width: 100%;">
+                        {% else %}
+                            <p>No Poster Available</p>
+                        {% endif %}
+                        <h3 class="movie-title">{{ movie.title }}</h3>
+                        {% if movie.rating %}
+                            <p class="movie-rating">Rating: {{ movie.rating }}</p>
+                        {% endif %}
+                        {% if user.current_user == user.username %}
+                            <form method="POST" action="{{ url_for('movies_bp.remove_from_watchlist', movie_id=movie.movieId) }}">
+                                <button class="remove-from-watchlist-button" type="submit">Remove from Watchlist</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No movies in watchlist yet...</p>
+        {% endif %}
+        <h1>Ratings & Reviews</h1>
+        {% if user.reviews %}
+            <div class="movie-grid">
+                {% for movie in user.reviews %}
+                    <div class="movie-item" data-movie-id="{{ movie.movieId }}">
+                        {% if movie.poster_url %}
+                            <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" style="width: 100%;">
+                        {% else %}
+                            <p>No Poster Available</p>
+                        {% endif %}
+                        <h3 class="movie-title">{{ movie.title }}</h3>                    
+                        <div class="movie-rating">
+                            {% for i in range(1, movie.rating) %}
+                            <p>★</p>
+                            {% endfor %}
+                            {% for i in range(movie.rating, 6) %}
+                                <p>☆</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No reviews yet</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.querySelectorAll('.movie-item').forEach(item => {
+            item.addEventListener('click', event => {
+                const movieId = item.getAttribute('data-movie-id');
+                window.location.href = `/movies/${movieId}`;
+            });
+        });
+        document.querySelectorAll("form").forEach(form => {
+            form.onsubmit = async function(event) {
+                event.preventDefault();  
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form)
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.success); 
+                    window.location.reload();
+                } else {
+                    const data = await response.json();
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                }
+            };
+        });
+
+    </script>
+{% endblock %}
+
+

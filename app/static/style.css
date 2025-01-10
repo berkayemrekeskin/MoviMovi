@@ -1,0 +1,278 @@
+html { 
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background: #e7e7e7; 
+    padding: 1rem; 
+}
+body { 
+    max-width: 900px;
+    margin: 0 auto; 
+    background: white; 
+}
+h1 { 
+    font-family: serif; 
+    color: #3766a8; 
+    margin: 1rem 0; 
+}
+a { 
+    color: white; 
+}
+hr { 
+    border: none; 
+    border-top: 1px solid lightgray; 
+}
+nav { 
+    background: #3766a8; 
+    display: flex; 
+    align-items: center; 
+    height: 40px;
+}
+nav h1 { 
+    flex: auto; 
+    margin: 0; 
+}
+nav h1 a { 
+    text-decoration: none; 
+    padding: 0.25rem 0.5rem; 
+}
+nav ul { 
+    display: flex; 
+    list-style: none; 
+    margin: 0; 
+    padding: 0; 
+}
+nav ul li a, nav ul li span, header .action { 
+    display: block; 
+    padding: 0.5rem; 
+}
+.content { 
+    padding: 0 1rem 1rem; 
+}
+.content > header { 
+    border-bottom: 1px solid lightgray; 
+    display: flex; 
+    align-items: flex-end; 
+}
+.content > header h1 { 
+    flex: auto; 
+    margin: 1rem 0 0.25rem 0; 
+}
+.flash { 
+    margin: 1em 0; 
+    padding: 1em; 
+    background: #cae6f6; 
+    border: 1px solid #3766a8; 
+}
+.post > header { 
+    display: flex; 
+    align-items: flex-end; 
+    font-size: 0.85em; 
+}
+.post > header > div:first-of-type { 
+    flex: auto; 
+}
+.post > header h1 { 
+    font-size: 1.5em; 
+    margin-bottom: 0; 
+}
+.post .about { 
+    color: slategray; 
+    font-style: italic; 
+}
+.post .body { 
+    white-space: pre-line; 
+}
+.content:last-child { 
+    margin-bottom: 0; 
+}
+.content form { 
+    margin: 1em 0; 
+    display: flex; 
+    flex-direction: column; 
+}
+.content label { 
+    font-weight: bold; 
+    margin-bottom: 0.5em; 
+}
+.content input, .content textarea { 
+    margin-bottom: 1em; 
+}
+.content textarea { 
+    min-height: 12em; 
+    resize: vertical; 
+}
+input.danger { 
+    color: #cc2f2e; 
+}
+input[type=submit] { 
+    align-self: start; 
+    min-width: 10em; 
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
+.movie-item {
+    text-align: center;
+    color: #ffffff;
+    font-weight: 600;
+    background-color: #3766a8;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    
+}
+.movie-item:hover {
+    transform: scale(1.05);
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+}
+
+/* movie.html */
+.movie-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.1fr 1fr 0.1fr;
+    grid-template-areas:
+        "title title"
+        "add-watchlist rating"
+        "poster review"
+        "poster add-review";
+    gap: 20px;
+}
+
+.movie-title {
+    grid-area: title;
+}
+
+.movie-poster {
+    grid-area: poster;
+}
+
+.movie-rating {
+    grid-area: rating;
+}
+
+.movie-reviews {
+    grid-area: review;
+    width: 100%;
+}
+
+.add-to-watchlist {
+    grid-area: add-watchlist;
+}
+
+.add-review {
+    grid-area: add-review;
+}
+
+.add-to-watchlist-button {
+    background-color: #3766a8;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 80%;
+    align-self: center;
+}
+
+.remove-from-watchlist-button {
+    background-color: #cc2f2e;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 80%;
+    align-self: center;
+}
+
+.add-review-button {
+    background-color: #3766a8;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 80%;
+    align-self: center;
+}
+
+.review-delete-button {
+    background-color: #cc2f2e;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 80%;
+    align-self: center;
+}
+
+.rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"] + label {
+    background-color: #3766a8;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+    margin-right: 10px; /* Space between the labels */
+}
+
+input[type="radio"]:checked + label {
+    color: gold; /* Change color when selected */
+}
+
+/* Optional: Style the labels to look like ticks or stars */
+label {
+    font-size: 20px;
+}
+
+.add-friend-button , .remove-friend-button {
+    background-color: #3766a8;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 25%
+}
+
+.remove-friend-button {
+    background-color: #cc2f2e;
+}
+
+.movie-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}

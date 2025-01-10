@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Movie{% endblock %}
+
+{% block navigation %}
+    <a href="{{ url_for('movies_bp.get_movies') }}">Movies</a>
+    <a href="{{ url_for('user.get_user', id = user_id) }}">Profile</a>
+    <a href="{{ url_for('auth.logout') }}">Log Out</a>
+{% endblock %}
+
+{% block content %}
+    <div class="movie-details">
+        <div class="movie-title"> 
+            <h1>{{ movie.title }}</h1>
+        </div>
+        <div class="movie-poster"> 
+            {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="Poster for {{ movie.title }}" style="width: 100%;" class="movie-poster">
+            {% else %}
+                <p>No Poster Available</p>
+            {% endif %}
+        </div>
+        <div class="movie-rating">
+            <h2>Rating:</h2>
+            {% for i in range(1, movie.rating) %}
+                <h1>★</h1>
+            {% endfor %}
+            {% for i in range(movie.rating, 6) %}
+                <h1>☆</h1>
+            {% endfor %}
+        </div>
+        <div class="movie-reviews">
+            <h2>Reviews</h2>
+            {% if reviews %}
+            <ul>    
+                {% for review in reviews %}
+                    {% for rating in ratings %} 
+                        {% for user in users %}
+                            {% if rating.userId == review.userId and review.userId == user.userId %}
+                                <li>
+                                    <div>
+                                        <a href="{{ url_for('user.get_user', id = user.userId) }}" style="color: #3766a8"> {{user.username}} </a>
+                                        - {{ review.review_text }} - Rating: {{ rating.rating }}
+                                        {% if user.userId == user_id %}
+                                            <form method="POST" action="{{ url_for('movies_bp.delete_review', movie_id=movie.movieId, review_id=review.reviewId) }}">
+                                                <button type="submit" class='review-delete-button'> Delete Review </button>
+                                            </form>
+                                            
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p>No reviews yet on this movie!</p>
+            {% endif %}
+        </div>  
+        <div class="add-to-watchlist">
+            {% if movie.in_watchlist %}
+                <form method="POST" action="{{ url_for('movies_bp.remove_from_watchlist', movie_id=movie.movieId) }}">
+                    <button class='remove-from-watchlist-button' type="submit">Remove from Watchlist</button>
+                </form>
+            {% else %}
+                <form method="POST" action="{{ url_for('movies_bp.add_to_watchlist', movie_id=movie.movieId) }}">
+                    <button class='add-to-watchlist-button' type="submit">Add to Watchlist</button>
+                </form>
+            {% endif %}
+        </div>      
+            <div class="add-review"> 
+                {% if not movie.rated %}
+                    <form id="form" method="POST" action="{{ url_for('movies_bp.add_review', movie_id=movie.movieId) }}">
+                        <label for="review">Write a review:</label>
+                        <textarea name="review" id="review" rows="4" cols="50"></textarea>
+                        <label for="rating">Rate the movie:</label><br>
+                        <!-- Rating options (1 to 5) using radio buttons -->
+                        <div class="rating">
+                            <input type="radio" id="rating1" name="rating" value="1" required>
+                            <label for="rating1">1</label>
+                
+                            <input type="radio" id="rating2" name="rating" value="2" required>
+                            <label for="rating2">2</label>
+                
+                            <input type="radio" id="rating3" name="rating" value="3" required>
+                            <label for="rating3">3</label>
+                
+                            <input type="radio" id="rating4" name="rating" value="4" required>
+                            <label for="rating4">4</label>
+                
+                            <input type="radio" id="rating5" name="rating" value="5" required>
+                            <label for="rating5">5</label>
+                        </div>
+                        
+                        <br><br>
+                        <button class="add-review-button" type="submit">Add Review</button>
+                    </form>
+
+                {% else %}
+                    <form id="form" method="POST" action="{{ url_for('movies_bp.update_review', movie_id=movie.movieId) }}">
+                        <label for="review">Update your review:</label>
+                        <textarea name="review" id="review" rows="4" cols="50"></textarea>
+                        <label for="rating">Update your rate to the movie:</label><br>
+                        
+                        <!-- Rating options (1 to 5) using radio buttons -->
+                        <div class="rating">
+                            <input type="radio" id="rating1" name="rating" value="1" required>
+                            <label for="rating1">1</label>
+                
+                            <input type="radio" id="rating2" name="rating" value="2" required>
+                            <label for="rating2">2</label>
+                
+                            <input type="radio" id="rating3" name="rating" value="3" required>
+                            <label for="rating3">3</label>
+                
+                            <input type="radio" id="rating4" name="rating" value="4" required>
+                            <label for="rating4">4</label>
+                
+                            <input type="radio" id="rating5" name="rating" value="5" required>
+                            <label for="rating5">5</label>
+                        </div>
+                        
+                        <br><br>
+                        <button class="add-review-button" type="submit">Update Review</button>
+                    </form>
+                {% endif %}
+            </div>
+    </div>
+
+
+    <script>
+        document.querySelectorAll("form").forEach(form => {
+            form.onsubmit = async function(event) {
+                event.preventDefault(); 
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form)
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.success);  
+                    window.location.reload(); 
+                } else {
+                    const data = await response.json();
+                    if (data.error) {
+                        alert(data.error); 
+                    }
+                }
+            };
+        });
+
+    </script>
+    
+
+    
+{% endblock %}
